@@ -5,6 +5,8 @@ const ValidationError = require('./notifications/errors/validation');
 const csv = require('csv-parser');
 const axios = require('axios');
 const config = require('../config');
+const Logger = require('./logger');
+
 const stream = require('stream');
 
 
@@ -15,7 +17,7 @@ module.exports = class TasksService {
   static async create(data, currentUser) {
     const transaction = await db.sequelize.transaction();
     try {
-      await TasksDBApi.create(
+      const newEntity = await TasksDBApi.create(
         data,
         {
           currentUser,
@@ -24,6 +26,7 @@ module.exports = class TasksService {
       );
 
       await transaction.commit();
+      if (newEntity.caseId) { await Logger.log({ organizationId: newEntity.organizationId, caseId: newEntity.caseId, actorUserId: currentUser.id, actionType: 'task_created', message: 'task created' }); }
     } catch (error) {
       await transaction.rollback();
       throw error;
@@ -89,6 +92,12 @@ module.exports = class TasksService {
       );
 
       await transaction.commit();
+      let dbEntity = await TasksDBApi.findBy({id});
+      if (dbEntity && dbEntity.caseId) {
+         let act = 'task_updated';
+         if (data.status === 'completed' && dbEntity.status !== 'completed') act = 'tasks_completed';
+         await Logger.log({ organizationId: dbEntity.organizationId, caseId: dbEntity.caseId, actorUserId: currentUser.id, actionType: act, message: act.replace('_', ' ') });
+      }
       return updatedTasks;
 
     } catch (error) {

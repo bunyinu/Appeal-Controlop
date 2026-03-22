@@ -328,7 +328,7 @@ module.exports = class Appeal_draftsDBApi {
         
         if (userOrganizations) {
             if (options?.currentUser?.organizationsId) {
-                where.organizationsId = options.currentUser.organizationsId;
+                where.organizationId = options.currentUser.organizationsId;
             }
         }
         
@@ -515,7 +515,7 @@ module.exports = class Appeal_draftsDBApi {
 
         
         if (globalAccess) {
-            delete where.organizationsId;
+            delete where.organizationId;
         }
         
 

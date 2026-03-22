@@ -12,108 +12,11 @@ const stream = require('stream');
 
 
 module.exports = class Activity_logsService {
-  static async create(data, currentUser) {
-    const transaction = await db.sequelize.transaction();
-    try {
-      await Activity_logsDBApi.create(
-        data,
-        {
-          currentUser,
-          transaction,
-        },
-      );
-
-      await transaction.commit();
-    } catch (error) {
-      await transaction.rollback();
-      throw error;
-    }
-  };
-
-  static async bulkImport(req, res, sendInvitationEmails = true, host) {
-    const transaction = await db.sequelize.transaction();
-
-    try {
-      await processFile(req, res);
-      const bufferStream = new stream.PassThrough();
-      const results = [];
-
-      await bufferStream.end(Buffer.from(req.file.buffer, "utf-8")); // convert Buffer to Stream
-
-      await new Promise((resolve, reject) => {
-        bufferStream
-          .pipe(csv())
-          .on('data', (data) => results.push(data))
-          .on('end', async () => {
-            console.log('CSV results', results);
-            resolve();
-          })
-          .on('error', (error) => reject(error));
-      })
-
-      await Activity_logsDBApi.bulkImport(results, {
-          transaction,
-          ignoreDuplicates: true,
-          validate: true,
-          currentUser: req.currentUser
-      });
-
-      await transaction.commit();
-    } catch (error) {
-      await transaction.rollback();
-      throw error;
-    }
-  }
-
-  static async update(data, id, currentUser) {
-    const transaction = await db.sequelize.transaction();
-    try {
-      let activity_logs = await Activity_logsDBApi.findBy(
-        {id},
-        {transaction},
-      );
-
-      if (!activity_logs) {
-        throw new ValidationError(
-          'activity_logsNotFound',
-        );
-      }
-
-      const updatedActivity_logs = await Activity_logsDBApi.update(
-        id,
-        data,
-        {
-          currentUser,
-          transaction,
-        },
-      );
-
-      await transaction.commit();
-      return updatedActivity_logs;
-
-    } catch (error) {
-      await transaction.rollback();
-      throw error;
-    }
-  };
-
-  static async deleteByIds(ids, currentUser) {
-    const transaction = await db.sequelize.transaction();
-
-    try {
-      await Activity_logsDBApi.deleteByIds(ids, {
-        currentUser,
-        transaction,
-      });
-
-      await transaction.commit();
-    } catch (error) {
-      await transaction.rollback();
-      throw error;
-    }
-  }
-
-  static async remove(id, currentUser) {
+  static async create() { throw new Error('ActivityLogs are read-only'); }
+  static async bulkImport() { throw new Error('ActivityLogs are read-only'); }
+  static async update() { throw new Error('ActivityLogs are read-only'); }
+  static async deleteByIds() { throw new Error('ActivityLogs are read-only'); }
+  static async remove(id, currentUser) { throw new Error("ActivityLogs are read-only");
     const transaction = await db.sequelize.transaction();
 
     try {

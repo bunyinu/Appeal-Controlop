@@ -84,13 +84,7 @@ router.use(checkCrudPermissions('activity_logs'));
 *        500:
 *          description: Some server error
 */
-router.post('/', wrapAsync(async (req, res) => {
-    const referer = req.headers.referer || `${req.protocol}://${req.hostname}${req.originalUrl}`;
-    const link = new URL(referer);
-    await Activity_logsService.create(req.body.data, req.currentUser, true, link.host);
-    const payload = true;
-    res.status(200).send(payload);
-}));
+
 
 /**
  * @swagger
@@ -127,13 +121,7 @@ router.post('/', wrapAsync(async (req, res) => {
  *        description: Some server error
  *
  */
-router.post('/bulk-import', wrapAsync(async (req, res) => {
-    const referer = req.headers.referer || `${req.protocol}://${req.hostname}${req.originalUrl}`;
-    const link = new URL(referer);
-    await Activity_logsService.bulkImport(req, res, true, link.host);
-    const payload = true;
-    res.status(200).send(payload);
-}));
+
 
 /**
   *  @swagger
@@ -183,11 +171,7 @@ router.post('/bulk-import', wrapAsync(async (req, res) => {
   *        500:
   *          description: Some server error
   */
-router.put('/:id', wrapAsync(async (req, res) => {
-  await Activity_logsService.update(req.body.data, req.body.id, req.currentUser);
-  const payload = true;
-  res.status(200).send(payload);
-}));
+
 
 /**
   * @swagger
@@ -221,11 +205,7 @@ router.put('/:id', wrapAsync(async (req, res) => {
   *        500:
   *          description: Some server error
   */
-router.delete('/:id', wrapAsync(async (req, res) => {
-  await Activity_logsService.remove(req.params.id, req.currentUser);
-  const payload = true;
-  res.status(200).send(payload);
-}));
+
 
 /**
   *  @swagger
@@ -259,11 +239,7 @@ router.delete('/:id', wrapAsync(async (req, res) => {
   *        500:
   *          description: Some server error
   */
-router.post('/deleteByIds', wrapAsync(async (req, res) => {
-    await Activity_logsService.deleteByIds(req.body.data, req.currentUser);
-    const payload = true;
-    res.status(200).send(payload);
-  }));
+
 
 /**
   *  @swagger

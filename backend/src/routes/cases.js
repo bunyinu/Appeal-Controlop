@@ -465,6 +465,64 @@ router.get('/:id', wrapAsync(async (req, res) => {
   res.status(200).send(payload);
 }));
 
+
+router.put('/:id/assign-owner', wrapAsync(async (req, res) => {
+  const payload = await CasesService.assignOwner(
+    req.body.data,
+    req.params.id,
+    req.currentUser,
+  );
+  res.status(200).send(payload);
+}));
+
+router.put('/:id/change-status', wrapAsync(async (req, res) => {
+  const payload = await CasesService.changeStatus(
+    req.body.data,
+    req.params.id,
+    req.currentUser,
+  );
+  res.status(200).send(payload);
+}));
+
+router.put('/:id/reopen', wrapAsync(async (req, res) => {
+  const payload = await CasesService.reopen(
+    req.body.data,
+    req.params.id,
+    req.currentUser,
+  );
+  res.status(200).send(payload);
+}));
+
+router.put('/:id/mark-won', wrapAsync(async (req, res) => {
+  const payload = await CasesService.markWon(
+    req.body.data,
+    req.params.id,
+    req.currentUser,
+  );
+  res.status(200).send(payload);
+}));
+
+router.put('/:id/mark-lost', wrapAsync(async (req, res) => {
+  const payload = await CasesService.markLost(
+    req.body.data,
+    req.params.id,
+    req.currentUser,
+  );
+  res.status(200).send(payload);
+}));
+
+
+router.put('/:id/submit-appeal', wrapAsync(async (req, res) => {
+  const payload = await CasesService.submitAppeal(
+    req.body.data,
+    req.params.id,
+    req.currentUser,
+  );
+  res.status(200).send(payload);
+}));
+
 router.use('/', require('../helpers').commonErrorHandler);
+
+
 
 module.exports = router;

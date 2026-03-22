@@ -98,7 +98,10 @@ action: {
 
       },
 
-message: {
+actionType: { type: DataTypes.STRING },
+      metadata: { type: DataTypes.JSONB },
+
+      message: {
         type: DataTypes.TEXT,
       
       

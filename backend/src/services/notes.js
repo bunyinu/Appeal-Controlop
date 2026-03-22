@@ -5,6 +5,8 @@ const ValidationError = require('./notifications/errors/validation');
 const csv = require('csv-parser');
 const axios = require('axios');
 const config = require('../config');
+const Logger = require('./logger');
+
 const stream = require('stream');
 
 
@@ -15,7 +17,7 @@ module.exports = class NotesService {
   static async create(data, currentUser) {
     const transaction = await db.sequelize.transaction();
     try {
-      await NotesDBApi.create(
+      const newEntity = await NotesDBApi.create(
         data,
         {
           currentUser,
@@ -24,6 +26,7 @@ module.exports = class NotesService {
       );
 
       await transaction.commit();
+      if (newEntity.caseId) { await Logger.log({ organizationId: newEntity.organizationId, caseId: newEntity.caseId, actorUserId: currentUser.id, actionType: 'note_added', message: 'note added' }); }
     } catch (error) {
       await transaction.rollback();
       throw error;
@@ -89,6 +92,12 @@ module.exports = class NotesService {
       );
 
       await transaction.commit();
+      let dbEntity = await NotesDBApi.findBy({id});
+      if (dbEntity && dbEntity.caseId) {
+         let act = 'note_updated';
+         if (data.status === 'completed' && dbEntity.status !== 'completed') act = 'notes_completed';
+         await Logger.log({ organizationId: dbEntity.organizationId, caseId: dbEntity.caseId, actorUserId: currentUser.id, actionType: act, message: act.replace('_', ' ') });
+      }
       return updatedNotes;
 
     } catch (error) {

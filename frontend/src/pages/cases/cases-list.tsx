@@ -56,6 +56,28 @@ const CasesTablesPage = () => {
     const hasCreatePermission = currentUser && hasPermission(currentUser, 'CREATE_CASES');
     
 
+    
+    const handleCustomFilter = (field, value) => {
+        setFilterItems(prev => {
+            const filtered = prev.filter(item => item.fields.selectedField !== field);
+            if (value) {
+                filtered.push({ id: field, fields: { selectedField: field, filterValue: value } });
+            }
+            return filtered;
+        });
+    };
+    
+    const handleCustomFilterFromTo = (field, value) => {
+        setFilterItems(prev => {
+            const filtered = prev.filter(item => item.fields.selectedField !== field);
+            if (value) {
+                filtered.push({ id: field, fields: { selectedField: field, filterValueFrom: value + 'T00:00', filterValueTo: value + 'T23:59' } });
+            }
+            return filtered;
+        });
+    };
+
+
     const addFilter = () => {
         const newItem = {
             id: uniqueId(),
@@ -102,6 +124,48 @@ const CasesTablesPage = () => {
         <SectionTitleLineWithButton icon={mdiChartTimelineVariant} title="Cases" main>
         {''}
         </SectionTitleLineWithButton>
+        
+        <CardBox className='mb-6'>
+            <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
+                <div>
+                    <label className="block text-sm font-bold mb-1">Status</label>
+                    <select className="w-full border rounded p-2 text-black" onChange={(e) => handleCustomFilter('status', e.target.value)}>
+                        <option value="">All</option>
+                        <option value="intake">Intake</option>
+                        <option value="triage">Triage</option>
+                        <option value="evidence_needed">Evidence Needed</option>
+                        <option value="appeal_ready">Appeal Ready</option>
+                        <option value="submitted">Submitted</option>
+                        <option value="pending_payer">Pending Payer</option>
+                        <option value="won">Won</option>
+                        <option value="lost">Lost</option>
+                    </select>
+                </div>
+                <div>
+                    <label className="block text-sm font-bold mb-1">Priority</label>
+                    <select className="w-full border rounded p-2 text-black" onChange={(e) => handleCustomFilter('priority', e.target.value)}>
+                        <option value="">All</option>
+                        <option value="low">Low</option>
+                        <option value="medium">Medium</option>
+                        <option value="high">High</option>
+                        <option value="urgent">Urgent</option>
+                    </select>
+                </div>
+                <div>
+                    <label className="block text-sm font-bold mb-1">Search Case #</label>
+                    <input type="text" className="w-full border rounded p-2 text-black" placeholder="Search..." onChange={(e) => handleCustomFilter('case_number', e.target.value)} />
+                </div>
+                <div>
+                    <label className="block text-sm font-bold mb-1">Search Patient</label>
+                    <input type="text" className="w-full border rounded p-2 text-black" placeholder="Search..." onChange={(e) => handleCustomFilter('patient_name', e.target.value)} />
+                </div>
+                <div>
+                    <label className="block text-sm font-bold mb-1">Due Date</label>
+                    <input type="date" className="w-full border rounded p-2 text-black" onChange={(e) => handleCustomFilterFromTo('due_at', e.target.value)} />
+                </div>
+            </div>
+        </CardBox>
+
         <CardBox   className='mb-6' cardBoxClassName='flex flex-wrap'>
           
             {hasCreatePermission && <BaseButton className={'mr-3'} href={'/cases/cases-new'} color='info' label='New Item'/>}

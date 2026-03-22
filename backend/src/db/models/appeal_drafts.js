@@ -14,7 +14,12 @@ module.exports = function(sequelize, DataTypes) {
         primaryKey: true,
       },
 
-title: {
+version: { type: DataTypes.INTEGER, defaultValue: 1 },
+      summary: { type: DataTypes.TEXT },
+      body: { type: DataTypes.TEXT },
+      evidenceChecklist: { type: DataTypes.JSONB },
+
+      title: {
         type: DataTypes.TEXT,
       
       
@@ -22,27 +27,7 @@ title: {
       },
 
 status: {
-        type: DataTypes.ENUM,
-      
-      
-
-        values: [
-
-"draft",
-
-
-"in_review",
-
-
-"approved",
-
-
-"sent",
-
-
-"archived"
-
-        ],
+        type: DataTypes.STRING,
 
       },
 
@@ -108,6 +93,14 @@ submitted_at: {
       as: 'case',
       foreignKey: {
         name: 'caseId',
+      },
+      constraints: false,
+    });
+
+    db.appeal_drafts.belongsTo(db.users, {
+      as: "submittedByUser",
+      foreignKey: {
+        name: "submittedByUserId",
       },
       constraints: false,
     });

@@ -832,7 +832,7 @@ module.exports = class UsersDBApi {
         
         
         if (!globalAccess && organizationId) {
-            where.organizationId = organizationId;
+            where.organizationsId = organizationId;
         }
         
 

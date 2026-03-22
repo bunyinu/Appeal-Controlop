@@ -439,6 +439,16 @@ router.get('/:id', wrapAsync(async (req, res) => {
   res.status(200).send(payload);
 }));
 
+
+router.put('/:id/submit', wrapAsync(async (req, res) => {
+  const payload = await Appeal_draftsService.submit(
+    req.params.id,
+    req.currentUser,
+  );
+  res.status(200).send(payload);
+}));
+
 router.use('/', require('../helpers').commonErrorHandler);
+
 
 module.exports = router;

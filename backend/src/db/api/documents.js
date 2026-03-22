@@ -343,7 +343,7 @@ module.exports = class DocumentsDBApi {
         
         if (userOrganizations) {
             if (options?.currentUser?.organizationsId) {
-                where.organizationsId = options.currentUser.organizationsId;
+                where.organizationId = options.currentUser.organizationsId;
             }
         }
         
@@ -537,7 +537,7 @@ module.exports = class DocumentsDBApi {
 
         
         if (globalAccess) {
-            delete where.organizationsId;
+            delete where.organizationId;
         }
         
 

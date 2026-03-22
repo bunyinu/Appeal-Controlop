@@ -317,7 +317,7 @@ module.exports = class Activity_logsDBApi {
         
         if (userOrganizations) {
             if (options?.currentUser?.organizationsId) {
-                where.organizationsId = options.currentUser.organizationsId;
+                where.organizationId = options.currentUser.organizationsId;
             }
         }
         
@@ -517,7 +517,7 @@ module.exports = class Activity_logsDBApi {
 
         
         if (globalAccess) {
-            delete where.organizationsId;
+            delete where.organizationId;
         }
         
 

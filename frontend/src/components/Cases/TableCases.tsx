@@ -178,10 +178,13 @@ const TableSampleCases = ({ filterItems, setFilterItems, filters, showGrid }) =>
 
   const handleSubmit = () => {
     loadData(0, generateFilterRequests);
-    
     setKanbanFilters(generateFilterRequests);
-    
   };
+
+  useEffect(() => {
+     loadData(0, generateFilterRequests);
+     setKanbanFilters(generateFilterRequests);
+  }, [generateFilterRequests]);
 
   const handleChange = (id) => (e) => {
     const value = e.target.value;

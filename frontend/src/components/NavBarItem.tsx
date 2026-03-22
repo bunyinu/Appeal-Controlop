@@ -1,6 +1,5 @@
-import React, {useEffect, useRef} from 'react'
+import React, {useEffect, useRef, useState } from 'react'
 import Link from 'next/link'
-import { useState } from 'react'
 import { mdiChevronUp, mdiChevronDown } from '@mdi/js'
 import BaseDivider from './BaseDivider'
 import BaseIcon from './BaseIcon'

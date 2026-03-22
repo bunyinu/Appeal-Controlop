@@ -7,7 +7,11 @@ const menuAside: MenuAsideItem[] = [
     icon: icon.mdiViewDashboardOutline,
     label: 'Dashboard',
   },
-  
+  {
+    href: '/appeal-dashboard',
+    label: 'Appeal Dashboard',
+    icon: icon.mdiViewDashboardOutline
+  },
   {
     href: '/users/users-list',
     label: 'Users',
@@ -109,15 +113,13 @@ const menuAside: MenuAsideItem[] = [
     label: 'Profile',
     icon: icon.mdiAccountCircle,
   },
-
- 
   {
     href: '/api-docs',
     target: '_blank',
     label: 'Swagger API',
     icon: icon.mdiFileCode,
     permissions: 'READ_API_DOCS'
-  },
+  }
 ]
 
 export default menuAside

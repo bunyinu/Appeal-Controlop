@@ -5,6 +5,8 @@ const ValidationError = require('./notifications/errors/validation');
 const csv = require('csv-parser');
 const axios = require('axios');
 const config = require('../config');
+const Logger = require('./logger');
+
 const stream = require('stream');
 
 
@@ -13,9 +15,18 @@ const stream = require('stream');
 
 module.exports = class DocumentsService {
   static async create(data, currentUser) {
+    if (data.case) {
+      const CasesDBApi = require('../db/api/cases');
+      const dbCase = await CasesDBApi.findBy({id: data.case});
+      if (!dbCase || (dbCase.organizationId !== currentUser.organizationId && !currentUser.app_role.globalAccess)) {
+         throw new ValidationError('documentsNotFound', 'Case not found or access denied');
+      }
+      data.organization = dbCase.organizationId;
+    }
+
     const transaction = await db.sequelize.transaction();
     try {
-      await DocumentsDBApi.create(
+      const newEntity = await DocumentsDBApi.create(
         data,
         {
           currentUser,
@@ -24,6 +35,7 @@ module.exports = class DocumentsService {
       );
 
       await transaction.commit();
+      if (newEntity.caseId) { await Logger.log({ organizationId: newEntity.organizationId, caseId: newEntity.caseId, actorUserId: currentUser.id, actionType: 'document_uploaded', message: 'document uploaded' }); }
     } catch (error) {
       await transaction.rollback();
       throw error;
@@ -89,6 +101,12 @@ module.exports = class DocumentsService {
       );
 
       await transaction.commit();
+      let dbEntity = await DocumentsDBApi.findBy({id});
+      if (dbEntity && dbEntity.caseId) {
+         let act = 'document_updated';
+         if (data.status === 'completed' && dbEntity.status !== 'completed') act = 'documents_completed';
+         await Logger.log({ organizationId: dbEntity.organizationId, caseId: dbEntity.caseId, actorUserId: currentUser.id, actionType: act, message: act.replace('_', ' ') });
+      }
       return updatedDocuments;
 
     } catch (error) {

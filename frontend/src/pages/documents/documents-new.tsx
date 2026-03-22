@@ -57,7 +57,7 @@ const initialValues = {
     
     
     
-    case: '',
+    case: router.query.caseId || '',
     
     
     
@@ -186,7 +186,7 @@ const DocumentsNew = () => {
 
   const handleSubmit = async (data) => {
     await dispatch(create(data))
-    await router.push('/documents/documents-list')
+    await router.push(router.query.caseId ? `/cases/cases-view/?id=${router.query.caseId}` : '/documents/documents-list')
   }
   return (
     <>

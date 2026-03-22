@@ -57,7 +57,7 @@ const initialValues = {
     
     
     
-    case: '',
+    case: router.query.caseId || '',
     
     
     
@@ -170,7 +170,7 @@ const Appeal_draftsNew = () => {
 
   const handleSubmit = async (data) => {
     await dispatch(create(data))
-    await router.push('/appeal_drafts/appeal_drafts-list')
+    await router.push(router.query.caseId ? `/cases/cases-view/?id=${router.query.caseId}` : '/appeal_drafts/appeal_drafts-list')
   }
   return (
     <>

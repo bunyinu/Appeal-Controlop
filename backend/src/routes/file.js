@@ -5,7 +5,16 @@ const passport = require('passport');
 const services = require('../services/file');
 const router = express.Router();
 
-router.get('/download', (req, res) => {
+router.get('/download', passport.authenticate('jwt', {session: false}), async (req, res) => {
+  // Tenant security check for documents
+  if (req.query.privateUrl && req.query.privateUrl.startsWith('documents/')) {
+    const db = require('../db/models');
+    const doc = await db.documents.findOne({ where: { attachments: { [db.Sequelize.Op.like]: '%' + req.query.privateUrl + '%' } } });
+    if (!doc || (doc.organizationId !== req.currentUser.organizationId && !req.currentUser.app_role.globalAccess)) {
+      return res.status(403).send('Forbidden');
+    }
+  }
+
   if (process.env.NODE_ENV == "production" || process.env.NEXT_PUBLIC_BACK_API) {
     services.downloadGCloud(req, res);
   }

@@ -92,36 +92,7 @@ amount_at_risk: {
       },
 
 status: {
-        type: DataTypes.ENUM,
-      
-      
-
-        values: [
-
-"intake",
-
-
-"triage",
-
-
-"evidence_needed",
-
-
-"appeal_ready",
-
-
-"submitted",
-
-
-"pending_payer",
-
-
-"won",
-
-
-"lost"
-
-        ],
+        type: DataTypes.STRING,
 
       },
 

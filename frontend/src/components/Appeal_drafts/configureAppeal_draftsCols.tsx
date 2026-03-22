@@ -205,6 +205,18 @@ export const loadColumns = async (
             getActions: (params: GridRowParams) => {
                 
                return [
+                   params.row.status !== 'submitted' ? <GridActionsCellItem
+                     key="submit"
+                     icon={<BaseIcon path={mdiEye} size="18" />}
+                     label="Submit"
+                     onClick={async () => {
+                          if (window.confirm('Submit this draft?')) {
+                             await axios.put('/cases/' + (params.row.case?.id || params.row.case) + '/submit-appeal', { data: { draftId: params.row.id } });
+                             window.location.reload();
+                          }
+                     }}
+                     showInMenu
+                   /> : <div key="ph"></div>,
                    <div key={params?.row?.id}>
                       <ListActionsPopover
                       onDelete={onDelete}
